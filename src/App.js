@@ -1,5 +1,5 @@
 
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 import { useState } from "react";
 import './App.css';
 import initializeAuthentication from './Firebase/firebase.initialize';
@@ -38,6 +38,7 @@ function App() {
 
   const handleSignUp = (e) => {
     e.preventDefault();
+    console.log(email, password);
     if (password.length < 6) {
       setError('Password must be at least 6 characters long');
       return;
@@ -48,12 +49,9 @@ function App() {
     }
     isLogIn ? processLogIn(email, password) : registerNewUser(email, password);
   }
+
   const processLogIn = (email, password) => {
-
-  }
-
-  const registerNewUser = (email, password) => {
-    createUserWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
 
         const user = result.user;
@@ -63,6 +61,34 @@ function App() {
 
       .catch(error => {
         setError(error.message);
+      })
+  }
+
+  const registerNewUser = (email, password) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+
+        const user = result.user;
+        console.log(user);
+        setError('');
+        verifyEmail();
+      })
+
+      .catch(error => {
+        setError(error.message);
+      })
+  }
+
+  const verifyEmail = () => {
+    sendEmailVerification(auth.currentUser)
+      .then(result => {
+        console.log(result);
+      })
+  }
+  const handleResetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(res => {
+
       })
   }
 
@@ -97,7 +123,10 @@ function App() {
         </div>
         <div className=" d-flex justify-content-center">
           <button type="submit" className="btn btn-primary ">{(isLogIn) ? 'Sign In' : "Sign Up"}</button>
+
+          <button onClick={handleResetPassword} type="button" className="btn btn-secondary btn-sm ms-4">Reset Password</button>
         </div>
+
       </form>
 
       <div className='text-center'>
