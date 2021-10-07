@@ -170,10 +170,10 @@ function App() {
 
       <div className='text-center'>
         <br /><br /><br />
-        <div>--------------------------------</div>
         <br /><br /><br />
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        <button onClick={handleGoogleSignIn}>Google Sign In</button>
+        <hr className='border border-3 bg-danger' />
+        <button className='btn-primary rounded' onClick={handleGoogleSignIn}>Google Sign In</button>
       </div>
 
     </div>
